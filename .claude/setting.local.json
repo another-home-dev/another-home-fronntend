@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls ~/AppData/Local/ms-playwright 2>&1)",
+      "Read(//c/Users/User/AppData/Local/ms-playwright/**)"
+    ]
+  }
+}
