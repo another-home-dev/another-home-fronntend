@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+
+  /* Brand — deep blue (Another Home identity). primary-800 is the spec's #1E3A8A. */
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e3a8a;
+  --color-primary-900: #172554;
+  --color-primary-950: #0f1a3d;
+
+  /* Status colors used across payments, maintenance, visitors */
+  --color-success-50: #ecfdf5;
+  --color-success-100: #d1fae5;
+  --color-success-500: #10b981;
+  --color-success-600: #059669;
+  --color-success-700: #047857;
+
+  --color-warning-50: #fffbeb;
+  --color-warning-100: #fef3c7;
+  --color-warning-500: #f59e0b;
+  --color-warning-600: #d97706;
+
+  --color-danger-50: #fef2f2;
+  --color-danger-100: #fee2e2;
+  --color-danger-500: #ef4444;
+  --color-danger-600: #dc2626;
+
+  --color-info-50: #f0f9ff;
+  --color-info-100: #e0f2fe;
+  --color-info-500: #0ea5e9;
+  --color-info-600: #0284c7;
+
+  /* Surfaces */
+  --color-surface: #ffffff;
+  --color-background: #f8fafc;
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #475569;
+
+  --shadow-card: 0 1px 2px 0 rgb(15 23 42 / 0.04), 0 1px 3px 0 rgb(15 23 42 / 0.06);
+  --shadow-card-hover: 0 4px 6px -1px rgb(15 23 42 / 0.08), 0 8px 16px -4px rgb(15 23 42 / 0.08);
+}
+
+.dark {
+  --color-surface: #0e1524;
+  --color-background: #070a14;
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #94a3b8;
+
+  --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.3), 0 1px 3px 0 rgb(0 0 0 / 0.4), inset 0 1px 0 0 rgb(255 255 255 / 0.03);
+  --shadow-card-hover: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 8px 16px -4px rgb(0 0 0 / 0.5);
+
+  --shadow-glow-primary: 0 0 0 1px rgb(59 130 246 / 0.15), 0 8px 24px -6px rgb(37 99 235 / 0.45);
+  --shadow-glow-success: 0 0 0 1px rgb(16 185 129 / 0.15), 0 8px 24px -6px rgb(5 150 105 / 0.4);
+  --shadow-glow-warning: 0 0 0 1px rgb(245 158 11 / 0.15), 0 8px 24px -6px rgb(217 119 6 / 0.4);
+  --shadow-glow-danger: 0 0 0 1px rgb(239 68 68 / 0.15), 0 8px 24px -6px rgb(220 38 38 / 0.4);
+  --shadow-glow-info: 0 0 0 1px rgb(14 165 233 / 0.15), 0 8px 24px -6px rgb(2 132 199 / 0.4);
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-background);
+    color: var(--color-text-primary);
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+
+  .dark ::-webkit-scrollbar-thumb {
+    background: #334155;
+  }
+
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+  }
+}
