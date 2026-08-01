@@ -1,4 +1,4 @@
-import { FiLayers, FiChevronRight } from "react-icons/fi";
+import { Layers, ChevronRight } from "lucide-react";
 import { Card } from "@shared/components/Card";
 import Badge from "@shared/components/Badge";
 
@@ -10,9 +10,9 @@ export default function FloorCard({ floor, onSelect }) {
     >
       <div className="flex items-start justify-between">
         <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-info-50 text-info-600 dark:bg-info-500/15 dark:text-info-500">
-          <FiLayers size={20} />
+          <Layers size={20} />
         </span>
-        <FiChevronRight className="text-slate-300 dark:text-slate-600" size={20} />
+        <ChevronRight className="text-slate-300 dark:text-slate-600" size={20} />
       </div>
 
       <h3 className="mt-4 text-base font-semibold text-slate-900 dark:text-slate-100">{floor.label}</h3>

@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { FiChevronRight, FiPlus } from "react-icons/fi";
+import { ChevronRight as FiChevronRight, Plus as FiPlus } from "lucide-react";
 import PageHeader from "@shared/components/PageHeader";
 import Button from "@shared/components/Button";
 import Spinner from "@shared/components/Spinner";

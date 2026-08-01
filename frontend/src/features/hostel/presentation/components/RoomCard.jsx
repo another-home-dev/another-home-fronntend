@@ -1,4 +1,4 @@
-import { FiUsers } from "react-icons/fi";
+import { BedDouble } from "lucide-react";
 import { Card } from "@shared/components/Card";
 import Badge from "@shared/components/Badge";
 
@@ -26,7 +26,7 @@ export default function RoomCard({ room, onSelect }) {
       </div>
 
       <div className="mt-4 flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-        <FiUsers size={16} />
+        <BedDouble size={16} />
         {room.occupiedBeds}/{room.capacity} beds occupied
       </div>
 

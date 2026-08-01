@@ -5,6 +5,7 @@ import DashboardPage from "@features/dashboard/presentation/DashboardPage";
 import HostelManagementPage from "@features/hostel/presentation/HostelManagementPage";
 import StudentListPage from "@features/students/presentation/StudentListPage";
 import StudentProfilePage from "@features/students/presentation/StudentProfilePage";
+import MaintenancePage from "@features/maintenance/presentation/MaintenancePage";
 import AdminLayout from "@app/layout/AdminLayout";
 import ProtectedRoute from "@app/routes/ProtectedRoute";
 
@@ -25,6 +26,7 @@ export default function AppRoutes() {
           <Route path="/hostel" element={<HostelManagementPage />} />
           <Route path="/students" element={<StudentListPage />} />
           <Route path="/students/:id" element={<StudentProfileRoute />} />
+          <Route path="/maintenance" element={<MaintenancePage />} />
         </Route>
       </Route>
 

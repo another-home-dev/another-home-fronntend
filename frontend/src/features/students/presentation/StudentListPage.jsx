@@ -1,36 +1,35 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiSearch } from "react-icons/fi";
+import { Search as FiSearch } from "lucide-react";
 import PageHeader from "@shared/components/PageHeader";
 import { Card } from "@shared/components/Card";
 import Table from "@shared/components/Table";
 import Badge from "@shared/components/Badge";
-import { getStudentsUseCase } from "@features/students/application/getStudentsUseCase";
+import Pagination from "@shared/components/Pagination";
+import { getStudentsPageUseCase } from "@features/students/application/getStudentsPageUseCase";
 import { PAYMENT_STATUS_TONE, PAYMENT_STATUS_LABEL } from "@shared/utils/paymentStatus";
+
+const PAGE_SIZE = 10;
 
 export default function StudentListPage() {
   const navigate = useNavigate();
-  const [students, setStudents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const [result, setResult] = useState({ currentPage: 1, totalPages: 1, totalRecords: 0, pageSize: PAGE_SIZE, data: [] });
 
   useEffect(() => {
-    getStudentsUseCase().then((data) => {
-      setStudents(data);
+    setIsLoading(true);
+    getStudentsPageUseCase({ page, pageSize: PAGE_SIZE, search: query }).then((data) => {
+      setResult(data);
       setIsLoading(false);
     });
-  }, []);
+  }, [page, query]);
 
-  const filteredStudents = useMemo(() => {
-    const term = query.trim().toLowerCase();
-    if (!term) return students;
-    return students.filter(
-      (student) =>
-        student.name.toLowerCase().includes(term) ||
-        student.email.toLowerCase().includes(term) ||
-        student.studentCode.toLowerCase().includes(term)
-    );
-  }, [students, query]);
+  const handleSearchChange = (event) => {
+    setPage(1);
+    setQuery(event.target.value);
+  };
 
   const columns = [
     { key: "studentCode", header: "Student ID" },
@@ -76,7 +75,7 @@ export default function StudentListPage() {
             <input
               type="text"
               value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={handleSearchChange}
               placeholder="Search by name, email or ID..."
               className="w-full bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400 dark:text-slate-200"
             />
@@ -85,11 +84,19 @@ export default function StudentListPage() {
 
         <Table
           columns={columns}
-          data={filteredStudents}
+          data={result.data}
           loading={isLoading}
           keyField="id"
           emptyMessage="No students match your search"
           onRowClick={(row) => navigate(`/students/${row.id}`)}
+        />
+        <Pagination
+          currentPage={result.currentPage}
+          totalPages={result.totalPages}
+          totalRecords={result.totalRecords}
+          pageSize={result.pageSize}
+          onPageChange={setPage}
+          label="students"
         />
       </Card>
     </div>
