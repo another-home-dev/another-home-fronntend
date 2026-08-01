@@ -1,4 +1,4 @@
-import { FiHome, FiLayers, FiChevronRight } from "react-icons/fi";
+import { Building2, Layers, ChevronRight } from "lucide-react";
 import { Card } from "@shared/components/Card";
 
 export default function BuildingCard({ building, onSelect }) {
@@ -9,9 +9,9 @@ export default function BuildingCard({ building, onSelect }) {
     >
       <div className="flex items-start justify-between">
         <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-50 text-primary-800 dark:bg-primary-500/15 dark:text-primary-300">
-          <FiHome size={20} />
+          <Building2 size={20} />
         </span>
-        <FiChevronRight className="text-slate-300 dark:text-slate-600" size={20} />
+        <ChevronRight className="text-slate-300 dark:text-slate-600" size={20} />
       </div>
 
       <h3 className="mt-4 text-base font-semibold text-slate-900 dark:text-slate-100">{building.name}</h3>
@@ -19,7 +19,7 @@ export default function BuildingCard({ building, onSelect }) {
 
       <div className="mt-4 flex items-center justify-between text-sm">
         <span className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
-          <FiLayers size={14} />
+          <Layers size={14} />
           {building.floorCount} floors
         </span>
         <span className="font-semibold text-slate-700 dark:text-slate-300">

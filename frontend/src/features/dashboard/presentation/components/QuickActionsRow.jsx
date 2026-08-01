@@ -1,13 +1,13 @@
 import { useNavigate } from "react-router-dom";
-import { FiKey, FiTool, FiCreditCard, FiCoffee, FiBarChart2 } from "react-icons/fi";
+import { KeyRound, Wrench, CreditCard, Coffee, BarChart3 } from "lucide-react";
 import { Card } from "@shared/components/Card";
 
 const ACTIONS = [
-  { label: "Room Allocation", description: "Assign rooms smartly", icon: FiKey, path: "/room-allocation", tone: "bg-primary-50 text-primary-800 dark:bg-primary-500/15 dark:text-primary-300" },
-  { label: "Maintenance", description: "Manage and track requests", icon: FiTool, path: "/maintenance", tone: "bg-warning-50 text-warning-600 dark:bg-warning-500/15 dark:text-warning-400" },
-  { label: "Payments", description: "Track payments and invoices", icon: FiCreditCard, path: "/payments", tone: "bg-violet-50 text-violet-600 dark:bg-violet-500/15 dark:text-violet-400" },
-  { label: "Cafeteria", description: "Manage weekly meal menu", icon: FiCoffee, path: "/cafeteria", tone: "bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-400" },
-  { label: "Reports", description: "Generate detailed analytics", icon: FiBarChart2, path: "/reports", tone: "bg-info-50 text-info-600 dark:bg-info-500/15 dark:text-info-400" },
+  { label: "Room Allocation", description: "Assign rooms smartly", icon: KeyRound, path: "/room-allocation", tone: "bg-primary-50 text-primary-800 dark:bg-primary-500/15 dark:text-primary-300" },
+  { label: "Maintenance", description: "Manage and track requests", icon: Wrench, path: "/maintenance", tone: "bg-warning-50 text-warning-600 dark:bg-warning-500/15 dark:text-warning-400" },
+  { label: "Payments", description: "Track payments and invoices", icon: CreditCard, path: "/payments", tone: "bg-violet-50 text-violet-600 dark:bg-violet-500/15 dark:text-violet-400" },
+  { label: "Cafeteria", description: "Manage weekly meal menu", icon: Coffee, path: "/cafeteria", tone: "bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-400" },
+  { label: "Reports", description: "Generate detailed analytics", icon: BarChart3, path: "/reports", tone: "bg-info-50 text-info-600 dark:bg-info-500/15 dark:text-info-400" },
 ];
 
 export default function QuickActionsRow() {

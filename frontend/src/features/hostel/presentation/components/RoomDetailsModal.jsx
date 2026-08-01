@@ -1,4 +1,4 @@
-import { FiEdit2, FiTrash2, FiUser } from "react-icons/fi";
+import { Pencil, Trash2, User } from "lucide-react";
 import Modal from "@shared/components/Modal";
 import Button from "@shared/components/Button";
 import Badge from "@shared/components/Badge";
@@ -14,10 +14,10 @@ export default function RoomDetailsModal({ open, onClose, room, onEdit, onDelete
       title={`Room ${room.roomNumber}`}
       footer={
         <>
-          <Button variant="outline" icon={FiTrash2} onClick={() => onDelete(room)}>
+          <Button variant="outline" icon={Trash2} onClick={() => onDelete(room)}>
             Delete
           </Button>
-          <Button icon={FiEdit2} onClick={() => onEdit(room)}>
+          <Button icon={Pencil} onClick={() => onEdit(room)}>
             Edit room
           </Button>
         </>
@@ -45,7 +45,7 @@ export default function RoomDetailsModal({ open, onClose, room, onEdit, onDelete
         </div>
 
         {room.assignedStudents.length === 0 ? (
-          <EmptyState icon={FiUser} message="No students assigned yet" />
+          <EmptyState icon={User} message="No students assigned yet" />
         ) : (
           <ul className="space-y-2">
             {room.assignedStudents.map((student) => (
