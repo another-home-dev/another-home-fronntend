@@ -1,6 +1,7 @@
 import studentRepository from "@features/students/infrastructure/studentRepository";
 import hostelRepository from "@features/hostel/infrastructure/hostelRepository";
 import maintenanceRepository from "@features/maintenance/infrastructure/maintenanceRepository";
+import { CATEGORIES } from "@features/maintenance/infrastructure/mockComplaints";
 import visitorRepository from "@features/visitors/infrastructure/visitorRepository";
 import paymentRepository from "@features/payments/infrastructure/paymentRepository";
 
@@ -57,15 +58,14 @@ class DashboardRepository {
 
   async fetchMaintenanceStats() {
     const complaints = await maintenanceRepository.fetchAll();
-    const categories = ["Electrical", "Plumbing", "Furniture", "Other"];
 
-    return categories.map((category) => {
+    return CATEGORIES.map((category) => {
       const categoryComplaints = complaints.filter((c) => c.category === category);
       return {
         category,
         pending: categoryComplaints.filter((c) => c.status === "Pending").length,
         inProgress: categoryComplaints.filter((c) => c.status === "In Progress").length,
-        completed: categoryComplaints.filter((c) => c.status === "Completed").length,
+        completed: categoryComplaints.filter((c) => c.status === "Resolved").length,
       };
     });
   }

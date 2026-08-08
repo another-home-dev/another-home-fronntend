@@ -1,18 +1,18 @@
-import { FiUsers, FiHome, FiKey, FiPieChart, FiTool, FiUserCheck, FiAlertCircle } from "react-icons/fi";
+import { Users, Building2, KeyRound, PieChart, Wrench, UserCheck, AlertCircle } from "lucide-react";
 import StatCard from "@shared/components/StatCard";
 
 export default function SummaryCardsGrid({ metrics }) {
   const cards = [
-    { label: "Total Students", value: metrics.totalStudents, icon: FiUsers, tone: "primary", trend: { value: "+12", direction: "up" } },
-    { label: "Total Rooms", value: metrics.totalRooms, icon: FiHome, tone: "primary" },
-    { label: "Available Beds", value: metrics.availableBeds, icon: FiKey, tone: "success" },
-    { label: "Occupancy Rate", value: `${metrics.occupancyRate}%`, icon: FiPieChart, tone: "info", trend: { value: "+5%", direction: "up" } },
-    { label: "Pending Maintenance", value: metrics.pendingMaintenance, icon: FiTool, tone: "warning", trend: { value: "-3", direction: "down" } },
-    { label: "Pending Visitor Requests", value: metrics.pendingVisitors, icon: FiUserCheck, tone: "info" },
+    { label: "Total Students", value: metrics.totalStudents, icon: Users, tone: "primary", trend: { value: "+12", direction: "up" } },
+    { label: "Total Rooms", value: metrics.totalRooms, icon: Building2, tone: "primary" },
+    { label: "Available Beds", value: metrics.availableBeds, icon: KeyRound, tone: "success" },
+    { label: "Occupancy Rate", value: `${metrics.occupancyRate}%`, icon: PieChart, tone: "info", trend: { value: "+5%", direction: "up" } },
+    { label: "Pending Maintenance", value: metrics.pendingMaintenance, icon: Wrench, tone: "warning", trend: { value: "-3", direction: "down" } },
+    { label: "Pending Visitor Requests", value: metrics.pendingVisitors, icon: UserCheck, tone: "info" },
     {
       label: "Unpaid Fees",
       value: `Rs. ${metrics.unpaidFeesAmount.toLocaleString()}`,
-      icon: FiAlertCircle,
+      icon: AlertCircle,
       tone: "danger",
       trend: { value: "+18%", direction: "up" },
     },
