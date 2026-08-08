@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { FiArrowRight, FiBarChart2, FiCloud, FiDroplet, FiWind } from "react-icons/fi";
+import { ArrowRight, BarChart3, Cloud, Droplet, Wind } from "lucide-react";
 import hostelImage from "@shared/assets/hostel.png";
 import Sparkline from "@shared/components/Sparkline";
 
@@ -43,7 +43,7 @@ export default function DashboardHero({ adminName, buildingOccupancy }) {
               className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-primary-900 transition-transform hover:-translate-y-0.5"
             >
               Explore Dashboard
-              <FiArrowRight size={16} />
+              <ArrowRight size={16} />
             </button>
             <button
               type="button"
@@ -51,7 +51,7 @@ export default function DashboardHero({ adminName, buildingOccupancy }) {
               className="inline-flex items-center gap-2 rounded-xl bg-white/10 px-5 py-2.5 text-sm font-semibold text-white ring-1 ring-white/25 backdrop-blur transition-transform hover:-translate-y-0.5 hover:bg-white/15"
             >
               View Reports
-              <FiBarChart2 size={16} />
+              <BarChart3 size={16} />
             </button>
           </div>
         </div>
@@ -59,7 +59,7 @@ export default function DashboardHero({ adminName, buildingOccupancy }) {
         <div className="hidden shrink-0 rounded-2xl bg-white/10 p-4 backdrop-blur-md ring-1 ring-white/20 lg:block">
           <div className="flex items-center gap-3">
             <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/15">
-              <FiCloud size={22} />
+              <Cloud size={22} />
             </span>
             <div>
               <p className="text-xs text-primary-100">Colombo, Sri Lanka</p>
@@ -69,11 +69,11 @@ export default function DashboardHero({ adminName, buildingOccupancy }) {
           </div>
           <div className="mt-4 flex items-center gap-4 border-t border-white/10 pt-3 text-xs text-primary-100">
             <span className="flex items-center gap-1.5">
-              <FiDroplet size={13} />
+              <Droplet size={13} />
               Humidity 78%
             </span>
             <span className="flex items-center gap-1.5">
-              <FiWind size={13} />
+              <Wind size={13} />
               12 km/h
             </span>
           </div>

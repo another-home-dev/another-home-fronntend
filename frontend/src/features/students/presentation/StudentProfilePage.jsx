@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { FiArrowLeft, FiMail, FiPhone, FiHome, FiCalendar, FiUser } from "react-icons/fi";
+import { ArrowLeft, Mail, Phone, Building2, DoorOpen, MapPin, Calendar, Users } from "lucide-react";
 import { Card, CardHeader, CardBody } from "@shared/components/Card";
 import Badge from "@shared/components/Badge";
 import Table from "@shared/components/Table";
@@ -57,7 +57,7 @@ export default function StudentProfilePage() {
         onClick={() => navigate("/students")}
         className="mb-4 flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-primary-800 dark:text-slate-400 dark:hover:text-primary-400"
       >
-        <FiArrowLeft size={16} />
+        <ArrowLeft size={16} />
         Back to students
       </button>
 
@@ -78,10 +78,10 @@ export default function StudentProfilePage() {
         <Card>
           <CardHeader title="Personal Information" />
           <CardBody className="space-y-3">
-            <InfoRow icon={FiMail} label="Email" value={student.email} />
-            <InfoRow icon={FiPhone} label="Contact" value={student.contact} />
-            <InfoRow icon={FiUser} label="Guardian" value={`${student.guardianName} · ${student.guardianContact}`} />
-            <InfoRow icon={FiCalendar} label="Joined" value={student.joinedDate} />
+            <InfoRow icon={Mail} label="Email" value={student.email} />
+            <InfoRow icon={Phone} label="Contact" value={student.contact} />
+            <InfoRow icon={Users} label="Guardian" value={`${student.guardianName} · ${student.guardianContact}`} />
+            <InfoRow icon={Calendar} label="Joined" value={student.joinedDate} />
           </CardBody>
         </Card>
 
@@ -90,13 +90,13 @@ export default function StudentProfilePage() {
           <CardBody className="space-y-3">
             {student.roomNumber ? (
               <>
-                <InfoRow icon={FiHome} label="Building" value={student.buildingName} />
-                <InfoRow icon={FiHome} label="Room Number" value={student.roomNumber} />
+                <InfoRow icon={Building2} label="Building" value={student.buildingName} />
+                <InfoRow icon={DoorOpen} label="Room Number" value={student.roomNumber} />
               </>
             ) : (
-              <EmptyState icon={FiHome} message="Not yet assigned to a room" />
+              <EmptyState icon={DoorOpen} message="Not yet assigned to a room" />
             )}
-            <InfoRow icon={FiUser} label="Home Address" value={student.address} />
+            <InfoRow icon={MapPin} label="Home Address" value={student.address} />
           </CardBody>
         </Card>
       </div>
