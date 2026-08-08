@@ -84,12 +84,12 @@ export default function Navbar({ onMenuClick }) {
                   type="button"
                   onClick={() => {
                     setMenuOpen(false);
-                    navigate("/settings");
+                    navigate("/profile");
                   }}
                   className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800"
                 >
                   <FiUser size={16} />
-                  Profile settings
+                  My Profile
                 </button>
                 <button
                   type="button"
