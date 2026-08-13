@@ -7,14 +7,28 @@ export const useAuthStore = create(
       user: null,
       token: null,
       isAuthenticated: false,
+      isLoading: false,
 
-      setSession: ({ user, token }) => set({ user, token, isAuthenticated: true }),
-      clearSession: () => set({ user: null, token: null, isAuthenticated: false }),
-      updateUser: (changes) => set((state) => ({ user: state.user ? { ...state.user, ...changes } : state.user })),
+      setSession: ({ user, token }) =>
+        set({ user, token, isAuthenticated: true, isLoading: false }),
+
+      clearSession: () =>
+        set({ user: null, token: null, isAuthenticated: false, isLoading: false }),
+
+      setLoading: (isLoading) => set({ isLoading }),
+
+      updateUser: (changes) =>
+        set((state) => ({
+          user: state.user ? { ...state.user, ...changes } : state.user,
+        })),
     }),
     {
       name: "another-home-auth",
-      partialize: (state) => ({ user: state.user, token: state.token, isAuthenticated: state.isAuthenticated }),
+      partialize: (state) => ({
+        user: state.user,
+        token: state.token,
+        isAuthenticated: state.isAuthenticated,
+      }),
     }
   )
 );

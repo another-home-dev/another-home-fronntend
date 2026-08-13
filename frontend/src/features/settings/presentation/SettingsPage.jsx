@@ -22,15 +22,23 @@ const TAB_CONTENT = {
   notifications: { title: "Notification Preferences", subtitle: "Choose what you want to be notified about", Component: NotificationSettingsForm },
 };
 
+import { useAuthContext } from "@asgardeo/auth-react";
+
 export default function SettingsPage() {
   const navigate = useNavigate();
   const clearSession = useAuthStore((state) => state.clearSession);
+  const { signOut } = useAuthContext();
   const [activeTab, setActiveTab] = useState("profile");
   const [confirmingLogout, setConfirmingLogout] = useState(false);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     clearSession();
-    navigate("/login", { replace: true });
+    try {
+      await signOut();
+    } catch (error) {
+      console.error("Asgardeo sign out failed:", error);
+      navigate("/login", { replace: true });
+    }
   };
 
   const { title, subtitle, Component } = TAB_CONTENT[activeTab];
