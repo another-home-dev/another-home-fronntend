@@ -5,10 +5,13 @@ import { useAuthStore } from "@features/authentication/application/useAuthStore"
 import { useNotificationsStore, useUnreadNotificationCount } from "@features/notifications/application/useNotificationsStore";
 import ThemeToggle from "@shared/components/ThemeToggle";
 
+import { useAuthContext } from "@asgardeo/auth-react";
+
 export default function Navbar({ onMenuClick }) {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
   const clearSession = useAuthStore((state) => state.clearSession);
+  const { signOut } = useAuthContext();
   const [menuOpen, setMenuOpen] = useState(false);
   const hasLoadedNotifications = useNotificationsStore((state) => state.hasLoaded);
   const loadNotifications = useNotificationsStore((state) => state.load);
@@ -18,9 +21,14 @@ export default function Navbar({ onMenuClick }) {
     if (!hasLoadedNotifications) loadNotifications();
   }, [hasLoadedNotifications, loadNotifications]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     clearSession();
-    navigate("/login", { replace: true });
+    try {
+      await signOut();
+    } catch (error) {
+      console.error("Asgardeo sign out failed:", error);
+      navigate("/login", { replace: true });
+    }
   };
 
   return (
