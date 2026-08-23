@@ -1,89 +1,97 @@
-import { BUILDING_META, buildRoomShells } from "@features/hostel/domain/roomInventory";
-import { getStudentsSnapshot } from "@features/students/infrastructure/studentRepository";
+import { httpClient } from "@infrastructure/api/httpClient";
 
-let roomShells = buildRoomShells();
-
-function hydrateRoom(shell) {
-  const occupants = getStudentsSnapshot().filter(
-    (student) => student.buildingName === shell.buildingName && student.roomNumber === shell.roomNumber
-  );
-
-  return {
-    ...shell,
-    occupiedBeds: occupants.length,
-    assignedStudents: occupants.map((student) => ({ id: student.id, name: student.name })),
-  };
-}
-
-function deriveBuildings() {
-  return BUILDING_META.map((meta) => {
-    const buildingRooms = roomShells.filter((room) => room.buildingId === meta.id).map(hydrateRoom);
-    const totalCapacity = buildingRooms.reduce((sum, room) => sum + room.capacity, 0);
-    const occupiedCount = buildingRooms.reduce((sum, room) => sum + room.occupiedBeds, 0);
-
-    return {
-      id: meta.id,
-      name: meta.name,
-      address: meta.address,
-      floorCount: meta.floorCount,
-      totalCapacity,
-      occupiedCount,
-    };
-  });
-}
-
-function deriveFloors(buildingId) {
-  const floorIds = [...new Set(roomShells.filter((room) => room.buildingId === buildingId).map((room) => room.floorId))];
-
-  return floorIds.map((floorId) => {
-    const floorRooms = roomShells.filter((room) => room.floorId === floorId).map(hydrateRoom);
-    const availableRooms = floorRooms.filter((room) => room.occupiedBeds < room.capacity).length;
-
-    return {
-      id: floorId,
-      buildingId,
-      label: floorRooms[0]?.floorLabel ?? floorId,
-      roomsCount: floorRooms.length,
-      availableRooms,
-    };
-  });
+function buildFloorId(buildingId, floor) {
+  return `${buildingId}-f${floor}`;
 }
 
 class HostelRepository {
   async fetchBuildings() {
-    return deriveBuildings();
+    const { data } = await httpClient.get("/accommodation/buildings");
+    return data.data;
   }
 
   async fetchFloors(buildingId) {
-    return deriveFloors(buildingId);
+    const rooms = await this.fetchAllRoomsFlat();
+    const buildingRooms = rooms.filter((room) => room.buildingId === buildingId);
+    const floorNumbers = [...new Set(buildingRooms.map((room) => room.floorNumber))];
+
+    return floorNumbers.map((floorNumber) => {
+      const floorRooms = buildingRooms.filter((room) => room.floorNumber === floorNumber);
+      const availableRooms = floorRooms.filter((room) => room.occupiedBeds < room.capacity).length;
+
+      return {
+        id: buildFloorId(buildingId, floorNumber),
+        buildingId,
+        floorNumber,
+        label: `Floor ${floorNumber}`,
+        roomsCount: floorRooms.length,
+        availableRooms,
+      };
+    });
   }
 
   async fetchRooms(floorId) {
-    return roomShells.filter((room) => room.floorId === floorId).map(hydrateRoom);
+    const rooms = await this.fetchAllRoomsFlat();
+    return rooms.filter((room) => room.floorId === floorId);
   }
 
   async fetchAllRoomsFlat() {
-    return roomShells.map(hydrateRoom);
+    const [{ data: roomsRes }, { data: buildingsRes }] = await Promise.all([
+      httpClient.get("/accommodation/rooms"),
+      httpClient.get("/accommodation/buildings"),
+    ]);
+
+    const buildings = buildingsRes.data;
+
+    return roomsRes.data.map((room) => ({
+      id: room.roomId,
+      buildingId: room.buildingId,
+      buildingName: buildings.find((b) => b.id === room.buildingId)?.name ?? null,
+      floorId: room.buildingId ? buildFloorId(room.buildingId, room.floor) : null,
+      floorLabel: `Floor ${room.floor}`,
+      floorNumber: room.floor,
+      roomNumber: room.roomNumber,
+      capacity: room.capacity,
+      gender: room.gender,
+      airConditioning: room.airConditioning,
+      rentPerMonth: room.rentPerMonth,
+      occupiedBeds: room.occupiedBeds,
+      assignedStudents: room.assignedStudents,
+    }));
   }
 
   async createRoom(payload) {
-    const newShell = {
-      id: `${payload.buildingId}-${payload.floorId}-r${Date.now()}`,
-      ...payload,
+    const { data } = await httpClient.post("/accommodation/rooms", {
+      roomNumber: payload.roomNumber,
       capacity: Number(payload.capacity),
-    };
-    roomShells = [...roomShells, newShell];
-    return hydrateRoom(newShell);
+      gender: payload.gender,
+      airConditioning: payload.airConditioning,
+      rentPerMonth: Number(payload.rentPerMonth),
+      floor: payload.floor,
+      buildingId: payload.buildingId,
+    });
+    return data.data;
   }
 
   async updateRoom(roomId, payload) {
-    roomShells = roomShells.map((room) => (room.id === roomId ? { ...room, ...payload } : room));
-    return hydrateRoom(roomShells.find((room) => room.id === roomId));
+    const { data } = await httpClient.patch(`/accommodation/rooms/${roomId}`, {
+      roomNumber: payload.roomNumber,
+      capacity: payload.capacity !== undefined ? Number(payload.capacity) : undefined,
+      gender: payload.gender,
+      airConditioning: payload.airConditioning,
+      rentPerMonth: payload.rentPerMonth !== undefined ? Number(payload.rentPerMonth) : undefined,
+    });
+    return data.data;
   }
 
   async deleteRoom(roomId) {
-    roomShells = roomShells.filter((room) => room.id !== roomId);
+    await httpClient.delete(`/accommodation/rooms/${roomId}`);
     return { success: true };
+  }
+
+  async assignStudentToRoom(roomId, studentId) {
+    const { data } = await httpClient.post(`/accommodation/rooms/${roomId}/assign`, { studentId });
+    return data.data;
   }
 }
 
