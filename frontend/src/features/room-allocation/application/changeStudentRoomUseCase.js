@@ -1,9 +1,9 @@
-import studentRepository from "@features/students/infrastructure/studentRepository";
+import hostelRepository from "@features/hostel/infrastructure/hostelRepository";
 
 export async function changeStudentRoomUseCase(student, newRoom) {
   if (newRoom.occupiedBeds >= newRoom.capacity) {
     throw new Error("This room has no available beds");
   }
 
-  return studentRepository.assignRoom(student.id, { roomNumber: newRoom.roomNumber, buildingName: newRoom.buildingName });
+  return hostelRepository.assignStudentToRoom(newRoom.id, student.id);
 }

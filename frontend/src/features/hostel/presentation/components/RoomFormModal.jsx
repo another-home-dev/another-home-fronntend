@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Modal from "@shared/components/Modal";
 import Input from "@shared/components/Input";
+import Select from "@shared/components/Select";
 import Button from "@shared/components/Button";
 
 export default function RoomFormModal({ open, onClose, onSubmit, room }) {
@@ -13,7 +14,15 @@ export default function RoomFormModal({ open, onClose, onSubmit, room }) {
     handleSubmit,
     setError,
     formState: { errors, isSubmitting },
-  } = useForm({ defaultValues: { roomNumber: room?.roomNumber ?? "", capacity: room?.capacity ?? 2 } });
+  } = useForm({
+    defaultValues: {
+      roomNumber: room?.roomNumber ?? "",
+      capacity: room?.capacity ?? 2,
+      gender: room?.gender ?? "Male",
+      airConditioning: room?.airConditioning ?? "Non-AC",
+      rentPerMonth: room?.rentPerMonth ?? 5000,
+    },
+  });
 
   const handleFormSubmit = async (values) => {
     setSubmitError("");
@@ -48,6 +57,25 @@ export default function RoomFormModal({ open, onClose, onSubmit, room }) {
           label="Capacity (beds)"
           error={errors.capacity?.message}
           {...register("capacity", { required: "Capacity is required", min: { value: 1, message: "Minimum capacity is 1" } })}
+        />
+
+        <Select label="Designation" {...register("gender", { required: true })}>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Neutral">Neutral</option>
+        </Select>
+
+        <Select label="Air conditioning" {...register("airConditioning", { required: true })}>
+          <option value="Non-AC">Non-AC</option>
+          <option value="AC">AC</option>
+        </Select>
+
+        <Input
+          type="number"
+          min={0}
+          label="Rent per month"
+          error={errors.rentPerMonth?.message}
+          {...register("rentPerMonth", { required: "Rent is required", min: { value: 0, message: "Rent cannot be negative" } })}
         />
 
         <div className="flex justify-end gap-3 pt-2">
