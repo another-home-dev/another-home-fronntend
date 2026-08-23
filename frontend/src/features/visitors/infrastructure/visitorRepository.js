@@ -1,4 +1,4 @@
-import { getStudentsSnapshot } from "@features/students/infrastructure/studentRepository";
+import { getStudentsSnapshot } from "@features/students/infrastructure/mockStudentsSnapshot";
 
 const VISITOR_NAMES = ["Mahesh Perera", "Chathura Silva", "Sunil Fernando", "Ruvini Jayasuriya", "Nuwan Rathnayake", "Anusha Wickramasinghe", "Kamal Gunawardena", "Sampath Bandara", "Manel Karunaratne", "Ajith Senanayake"];
 const PURPOSES = ["Family visit", "Bringing groceries", "Parent visit", "Study group friend", "Delivery pickup", "Sibling visit", "Friend visit"];

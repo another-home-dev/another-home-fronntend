@@ -1,6 +1,5 @@
 import { Routes, Route, Navigate, useParams } from "react-router-dom";
 import LoginPage from "@features/authentication/presentation/LoginPage";
-import ForgotPasswordPage from "@features/authentication/presentation/ForgotPasswordPage";
 import DashboardPage from "@features/dashboard/presentation/DashboardPage";
 import HostelManagementPage from "@features/hostel/presentation/HostelManagementPage";
 import StudentListPage from "@features/students/presentation/StudentListPage";
@@ -28,7 +27,6 @@ export default function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
       <Route element={<ProtectedRoute />}>
         <Route element={<AdminLayout />}>

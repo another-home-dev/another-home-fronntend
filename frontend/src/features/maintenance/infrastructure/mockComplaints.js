@@ -1,4 +1,4 @@
-import { getStudentsSnapshot } from "@features/students/infrastructure/studentRepository";
+import { getStudentsSnapshot } from "@features/students/infrastructure/mockStudentsSnapshot";
 
 const CATEGORY_ISSUES = {
   Electrical: ["Broken ceiling fan", "Light bulb replacement", "Power socket not working", "Flickering tube light", "Short circuit near study desk"],
