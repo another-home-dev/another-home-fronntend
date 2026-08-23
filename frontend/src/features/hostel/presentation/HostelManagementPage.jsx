@@ -69,6 +69,7 @@ export default function HostelManagementPage() {
         buildingName: selectedBuilding.name,
         floorId: selectedFloor.id,
         floorLabel: selectedFloor.label,
+        floor: selectedFloor.floorNumber,
       });
     }
     setFormState({ open: false, room: null });
