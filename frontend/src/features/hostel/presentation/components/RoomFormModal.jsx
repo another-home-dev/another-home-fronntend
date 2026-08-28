@@ -5,7 +5,7 @@ import Input from "@shared/components/Input";
 import Select from "@shared/components/Select";
 import Button from "@shared/components/Button";
 
-export default function RoomFormModal({ open, onClose, onSubmit, room }) {
+export default function RoomFormModal({ open, onClose, onSubmit, room, defaultFloor, maxFloor }) {
   const [submitError, setSubmitError] = useState("");
   const isEditing = Boolean(room);
 
@@ -21,6 +21,7 @@ export default function RoomFormModal({ open, onClose, onSubmit, room }) {
       gender: room?.gender ?? "Male",
       airConditioning: room?.airConditioning ?? "Non-AC",
       rentPerMonth: room?.rentPerMonth ?? 5000,
+      floor: defaultFloor ?? 1,
     },
   });
 
@@ -50,6 +51,21 @@ export default function RoomFormModal({ open, onClose, onSubmit, room }) {
           error={errors.roomNumber?.message}
           {...register("roomNumber", { required: "Room number is required" })}
         />
+
+        {!isEditing && (
+          <Input
+            type="number"
+            min={1}
+            max={maxFloor}
+            label="Floor number"
+            error={errors.floor?.message}
+            {...register("floor", {
+              required: "Floor number is required",
+              min: { value: 1, message: "Minimum floor is 1" },
+              ...(maxFloor ? { max: { value: maxFloor, message: `This building only has ${maxFloor} floors` } } : {}),
+            })}
+          />
+        )}
 
         <Input
           type="number"

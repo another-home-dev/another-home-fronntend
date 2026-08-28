@@ -3,5 +3,5 @@ export const asgardeoConfig = {
     baseUrl: "https://api.asgardeo.io/t/hiru616",
     signInRedirectURL: "http://localhost:5173",
     signOutRedirectURL: "http://localhost:5173",
-    scope: ["openid", "profile"]
+    scope: ["openid", "profile", "groups", "roles"]
 };
