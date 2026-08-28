@@ -11,10 +11,12 @@ import {
   FiBarChart2,
   FiBell,
   FiSettings,
+  FiShield,
 } from "react-icons/fi";
 
 export const NAV_ITEMS = [
   { label: "Dashboard", path: "/dashboard", icon: FiGrid },
+  { label: "Wardens", path: "/admin/wardens", icon: FiShield, roles: ["super-admin"] },
   { label: "Hostel Management", path: "/hostel", icon: FiHome },
   { label: "Students", path: "/students", icon: FiUsers },
   { label: "Room Allocation", path: "/room-allocation", icon: FiKey },

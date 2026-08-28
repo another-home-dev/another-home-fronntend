@@ -35,7 +35,7 @@ export default function Sidebar({ open, onClose }) {
         </div>
 
         <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-2">
-          {NAV_ITEMS.map(({ label, path, icon: Icon, badgeKey }) => {
+          {NAV_ITEMS.filter((item) => !item.roles || item.roles.includes(user?.role)).map(({ label, path, icon: Icon, badgeKey }) => {
             const badgeCount = badgeKey === "notifications" ? unreadCount : 0;
 
             return (
