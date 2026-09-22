@@ -13,8 +13,10 @@ function Field({ label, value }) {
   );
 }
 
-export default function ComplaintDetailsModal({ open, complaint, onClose }) {
+export default function ComplaintDetailsModal({ open, complaint, onClose, onResolve, isResolving }) {
   if (!complaint) return null;
+
+  const isResolved = complaint.status === "Resolved";
 
   return (
     <Modal
@@ -26,8 +28,13 @@ export default function ComplaintDetailsModal({ open, complaint, onClose }) {
           <Button variant="outline" onClick={onClose}>
             Close
           </Button>
-          <Button icon={CheckCircle2} disabled title="Backend integration coming soon">
-            Mark as Resolved
+          <Button
+            icon={CheckCircle2}
+            disabled={isResolved || isResolving}
+            loading={isResolving}
+            onClick={() => onResolve?.(complaint.id)}
+          >
+            {isResolved ? "Resolved" : "Mark as Resolved"}
           </Button>
         </>
       }

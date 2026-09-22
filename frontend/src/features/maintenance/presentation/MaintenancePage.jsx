@@ -6,6 +6,7 @@ import StatCard from "@shared/components/StatCard";
 import Button from "@shared/components/Button";
 import EmptyState from "@shared/components/EmptyState";
 import { useComplaintsData } from "@features/maintenance/presentation/hooks/useComplaintsData";
+import { updateComplaintStatusUseCase } from "@features/maintenance/application/updateComplaintStatusUseCase";
 import ComplaintFilters from "@features/maintenance/presentation/components/ComplaintFilters";
 import ComplaintsTable from "@features/maintenance/presentation/components/ComplaintsTable";
 import ComplaintsTableSkeleton from "@features/maintenance/presentation/components/ComplaintsTableSkeleton";
@@ -15,6 +16,15 @@ import ComplaintDetailsModal from "@features/maintenance/presentation/components
 export default function MaintenancePage() {
   const { filters, updateFilters, resetFilters, page, setPage, result, stats, isLoading, refresh } = useComplaintsData();
   const [viewingComplaint, setViewingComplaint] = useState(null);
+  const [isResolving, setIsResolving] = useState(false);
+
+  const handleResolve = async (id) => {
+    setIsResolving(true);
+    await updateComplaintStatusUseCase(id, "Resolved");
+    setIsResolving(false);
+    setViewingComplaint((prev) => (prev ? { ...prev, status: "Resolved" } : prev));
+    refresh();
+  };
 
   const hasResults = result.data.length > 0;
 
@@ -73,7 +83,13 @@ export default function MaintenancePage() {
         )}
       </Card>
 
-      <ComplaintDetailsModal open={Boolean(viewingComplaint)} complaint={viewingComplaint} onClose={() => setViewingComplaint(null)} />
+      <ComplaintDetailsModal
+        open={Boolean(viewingComplaint)}
+        complaint={viewingComplaint}
+        onClose={() => setViewingComplaint(null)}
+        onResolve={handleResolve}
+        isResolving={isResolving}
+      />
     </div>
   );
 }
