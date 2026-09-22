@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { ArrowLeft, Mail, Phone, Building2, DoorOpen, MapPin, Calendar, Users } from "lucide-react";
+import { ArrowLeft, Mail, Phone, Building2, DoorOpen, MapPin, Calendar, Users, GraduationCap, BookOpen, IdCard } from "lucide-react";
 import { Card, CardHeader, CardBody } from "@shared/components/Card";
 import Badge from "@shared/components/Badge";
 import Table from "@shared/components/Table";
@@ -82,12 +82,16 @@ export default function StudentProfilePage() {
             <InfoRow icon={Phone} label="Contact" value={student.contact} />
             <InfoRow icon={Users} label="Guardian" value={`${student.guardianName} · ${student.guardianContact}`} />
             <InfoRow icon={Calendar} label="Joined" value={student.joinedDate} />
+            <InfoRow icon={IdCard} label="NIC" value={student.nic ?? "Not set"} />
           </CardBody>
         </Card>
 
         <Card>
-          <CardHeader title="Accommodation Details" />
+          <CardHeader title="Academic & Accommodation Details" />
           <CardBody className="space-y-3">
+            <InfoRow icon={GraduationCap} label="Faculty" value={student.faculty ?? "Not set"} />
+            <InfoRow icon={BookOpen} label="Degree Program" value={student.degreeProgram ?? "Not set"} />
+            <InfoRow icon={Calendar} label="Academic Year" value={student.academicYear ?? "Not set"} />
             {student.roomNumber ? (
               <>
                 <InfoRow icon={Building2} label="Building" value={student.buildingName} />
