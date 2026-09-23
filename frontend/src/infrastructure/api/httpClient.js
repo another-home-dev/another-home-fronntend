@@ -20,7 +20,11 @@ httpClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
+      // The gateway rejected our token (expired or revoked). Drop the session and
+      // say why, so the guard sends the user to /login with an explanation rather
+      // than silently bouncing them.
       useAuthStore.getState().clearSession();
+      useAuthStore.getState().setAuthError("Your session has expired. Please sign in again.");
     }
     return Promise.reject(error);
   }
