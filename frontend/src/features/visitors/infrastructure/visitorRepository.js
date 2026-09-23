@@ -1,46 +1,40 @@
-import { getStudentsSnapshot } from "@features/students/infrastructure/mockStudentsSnapshot";
-
-const VISITOR_NAMES = ["Mahesh Perera", "Chathura Silva", "Sunil Fernando", "Ruvini Jayasuriya", "Nuwan Rathnayake", "Anusha Wickramasinghe", "Kamal Gunawardena", "Sampath Bandara", "Manel Karunaratne", "Ajith Senanayake"];
-const PURPOSES = ["Family visit", "Bringing groceries", "Parent visit", "Study group friend", "Delivery pickup", "Sibling visit", "Friend visit"];
-const STATUSES = ["Pending", "Approved", "Rejected"];
-const TIMES = ["9:00 AM", "10:30 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:30 PM", "4:15 PM", "5:00 PM", "6:00 PM"];
-const TOTAL_REQUESTS = 24;
-const TODAY = new Date(2026, 6, 31);
-
-function formatDate(date) {
-  return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-}
-
-function buildRequests() {
-  const allocatedStudents = getStudentsSnapshot().filter((student) => student.roomNumber);
-
-  return Array.from({ length: TOTAL_REQUESTS }, (_, index) => {
-    const student = allocatedStudents[index % allocatedStudents.length];
-    const date = new Date(TODAY);
-    date.setDate(date.getDate() - ((index * 2) % 20));
-
-    return {
-      id: `vr${index + 1}`,
-      studentName: student.name,
-      roomNumber: student.roomNumber,
-      visitorName: VISITOR_NAMES[index % VISITOR_NAMES.length],
-      visitorContact: `+94 7${(index % 9) + 1} ${200 + index * 5} ${3000 + index}`,
-      purpose: PURPOSES[index % PURPOSES.length],
-      date: formatDate(date),
-      time: TIMES[index % TIMES.length],
-      status: STATUSES[index % STATUSES.length],
-    };
-  }).sort((a, b) => (a.date < b.date ? 1 : -1));
-}
-
-let requests = buildRequests();
+import { httpClient } from "@infrastructure/api/httpClient";
+import studentRepository from "@features/students/infrastructure/studentRepository";
+import hostelRepository from "@features/hostel/infrastructure/hostelRepository";
 
 class VisitorRepository {
   async fetchAll() {
-    return requests;
+    const [{ data: res }, students, rooms] = await Promise.all([
+      httpClient.get("/operations/visitors", { params: { pageSize: 500 } }),
+      studentRepository.fetchAll(),
+      hostelRepository.fetchAllRoomsFlat(),
+    ]);
+
+    const studentsBySub = new Map(students.map((s) => [s.asgardeoSub, s]));
+    const roomsById = new Map(rooms.map((r) => [r.id, r]));
+
+    return res.data
+      .map((item) => {
+        const student = studentsBySub.get(item.studentId);
+        const room = roomsById.get(item.roomId);
+
+        return {
+          id: item.id,
+          studentName: student?.name ?? "Unknown Student",
+          roomNumber: room?.roomNumber ?? "—",
+          visitorName: item.visitorName,
+          visitorContact: item.visitorContact,
+          purpose: item.purpose,
+          date: item.visitDate,
+          time: item.visitTime,
+          status: item.status,
+        };
+      })
+      .sort((a, b) => (a.date < b.date ? 1 : -1));
   }
 
   async fetchHistoryPage({ page = 1, pageSize = 10, search = "", status = "All" } = {}) {
+    const requests = await this.fetchAll();
     const term = search.trim().toLowerCase();
     const filtered = requests.filter((item) => {
       if (item.status === "Pending") return false;
@@ -67,8 +61,8 @@ class VisitorRepository {
   }
 
   async updateStatus(id, status) {
-    requests = requests.map((item) => (item.id === id ? { ...item, status } : item));
-    return requests.find((item) => item.id === id);
+    const { data } = await httpClient.patch(`/operations/visitors/${id}`, { status });
+    return data;
   }
 }
 

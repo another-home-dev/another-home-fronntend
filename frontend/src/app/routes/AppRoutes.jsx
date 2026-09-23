@@ -15,6 +15,7 @@ import AnnouncementManagementPage from "@features/announcements/presentation/Ann
 import NotificationsPage from "@features/notifications/presentation/NotificationsPage";
 import SettingsPage from "@features/settings/presentation/SettingsPage";
 import WardenProfilePage from "@features/profile/presentation/WardenProfilePage";
+import WardenManagementPage from "@features/admin/presentation/WardenManagementPage";
 import AdminLayout from "@app/layout/AdminLayout";
 import ProtectedRoute from "@app/routes/ProtectedRoute";
 
@@ -45,6 +46,10 @@ export default function AppRoutes() {
           <Route path="/notifications" element={<NotificationsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/profile" element={<WardenProfilePage />} />
+
+          <Route element={<ProtectedRoute allowedRoles={["super-admin"]} />}>
+            <Route path="/admin/wardens" element={<WardenManagementPage />} />
+          </Route>
         </Route>
       </Route>
 

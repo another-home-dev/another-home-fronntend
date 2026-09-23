@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search as FiSearch } from "lucide-react";
+import { Search as FiSearch, Plus as FiPlus } from "lucide-react";
 import PageHeader from "@shared/components/PageHeader";
 import { Card } from "@shared/components/Card";
 import Table from "@shared/components/Table";
 import Badge from "@shared/components/Badge";
 import Pagination from "@shared/components/Pagination";
+import Button from "@shared/components/Button";
 import { getStudentsPageUseCase } from "@features/students/application/getStudentsPageUseCase";
+import { createStudentUseCase } from "@features/students/application/createStudentUseCase";
+import AddStudentModal from "@features/students/presentation/components/AddStudentModal";
 import { PAYMENT_STATUS_TONE, PAYMENT_STATUS_LABEL } from "@shared/utils/paymentStatus";
 
 const PAGE_SIZE = 10;
@@ -17,18 +20,26 @@ export default function StudentListPage() {
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
   const [result, setResult] = useState({ currentPage: 1, totalPages: 1, totalRecords: 0, pageSize: PAGE_SIZE, data: [] });
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-  useEffect(() => {
+  const loadStudents = () => {
     setIsLoading(true);
     getStudentsPageUseCase({ page, pageSize: PAGE_SIZE, search: query }).then((data) => {
       setResult(data);
       setIsLoading(false);
     });
-  }, [page, query]);
+  };
+
+  useEffect(loadStudents, [page, query]);
 
   const handleSearchChange = (event) => {
     setPage(1);
     setQuery(event.target.value);
+  };
+
+  const handleCreateStudent = async (payload) => {
+    await createStudentUseCase(payload);
+    loadStudents();
   };
 
   const columns = [
@@ -66,7 +77,17 @@ export default function StudentListPage() {
 
   return (
     <div>
-      <PageHeader title="Students" subtitle="Manage hostel residents" />
+      <PageHeader
+        title="Students"
+        subtitle="Manage hostel residents"
+        action={
+          <Button icon={FiPlus} onClick={() => setIsAddModalOpen(true)}>
+            Add Student
+          </Button>
+        }
+      />
+
+      <AddStudentModal open={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} onSubmit={handleCreateStudent} />
 
       <Card>
         <div className="flex items-center gap-2 border-b border-slate-100 p-4 dark:border-slate-800">

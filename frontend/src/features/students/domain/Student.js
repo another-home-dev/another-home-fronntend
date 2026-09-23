@@ -12,6 +12,10 @@ export class Student {
     guardianName,
     guardianContact,
     address,
+    faculty,
+    degreeProgram,
+    academicYear,
+    nic,
     payments = [],
     complaints = [],
   }) {
@@ -27,6 +31,10 @@ export class Student {
     this.guardianName = guardianName;
     this.guardianContact = guardianContact;
     this.address = address;
+    this.faculty = faculty;
+    this.degreeProgram = degreeProgram;
+    this.academicYear = academicYear;
+    this.nic = nic;
     this.payments = payments;
     this.complaints = complaints;
   }
