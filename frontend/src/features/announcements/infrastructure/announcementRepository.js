@@ -1,59 +1,45 @@
-const SEED = [
-  {
-    title: "Water supply maintenance on Sunday",
-    message: "Water supply will be interrupted from 9 AM to 1 PM on Sunday for scheduled tank cleaning across all blocks.",
-    category: "Maintenance",
-    createdBy: "Warden Office",
-    createdDate: "Jul 12, 2026",
-  },
-  {
-    title: "July hostel fees due",
-    message: "Please settle your July hostel fees before the 20th to avoid late payment charges.",
-    category: "Payment",
-    createdBy: "Accounts Office",
-    createdDate: "Jul 10, 2026",
-  },
-  {
-    title: "Fire drill this Friday",
-    message: "A mandatory fire safety drill will be conducted at 4 PM this Friday. All residents must participate.",
-    category: "Emergency",
-    createdBy: "Warden Office",
-    createdDate: "Jul 9, 2026",
-  },
-  {
-    title: "New study room hours",
-    message: "The ground floor study room is now open 24/7 for the exam season. Please maintain silence after 10 PM.",
-    category: "General",
-    createdBy: "Administration",
-    createdDate: "Jul 5, 2026",
-  },
-];
+import { httpClient } from "@infrastructure/api/httpClient";
+import { useAuthStore } from "@features/authentication/application/useAuthStore";
 
-let announcements = SEED.map((item, index) => ({ id: `an${index + 1}`, ...item }));
+function formatDate(isoString) {
+  return new Date(isoString).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+function toAnnouncement(item) {
+  return {
+    id: item.id,
+    title: item.title,
+    message: item.content,
+    category: "General",
+    createdBy: useAuthStore.getState().user?.name ?? "Warden Office",
+    createdDate: formatDate(item.publishedDate),
+  };
+}
 
 class AnnouncementRepository {
   async fetchAll() {
-    return announcements;
+    const { data: res } = await httpClient.get("/operations/notices", { params: { pageSize: 500 } });
+    return res.data.map(toAnnouncement);
   }
 
   async create(payload) {
-    const newAnnouncement = {
-      id: `an${Date.now()}`,
-      createdBy: "Admin",
-      createdDate: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
-      ...payload,
-    };
-    announcements = [newAnnouncement, ...announcements];
-    return newAnnouncement;
+    const { data } = await httpClient.post("/operations/notices", {
+      title: payload.title,
+      content: payload.message,
+    });
+    return toAnnouncement(data);
   }
 
   async update(id, payload) {
-    announcements = announcements.map((item) => (item.id === id ? { ...item, ...payload } : item));
-    return announcements.find((item) => item.id === id);
+    const { data } = await httpClient.patch(`/operations/notices/${id}`, {
+      title: payload.title,
+      content: payload.message,
+    });
+    return toAnnouncement(data);
   }
 
   async remove(id) {
-    announcements = announcements.filter((item) => item.id !== id);
+    await httpClient.delete(`/operations/notices/${id}`);
     return { success: true };
   }
 }

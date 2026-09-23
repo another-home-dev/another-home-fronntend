@@ -9,11 +9,13 @@ import { getBuildingsUseCase } from "@features/hostel/application/getBuildingsUs
 import { getFloorsUseCase } from "@features/hostel/application/getFloorsUseCase";
 import { getRoomsUseCase } from "@features/hostel/application/getRoomsUseCase";
 import { createRoomUseCase, updateRoomUseCase, deleteRoomUseCase } from "@features/hostel/application/manageRoomUseCase";
+import { createBuildingUseCase } from "@features/hostel/application/createBuildingUseCase";
 import BuildingCard from "@features/hostel/presentation/components/BuildingCard";
 import FloorCard from "@features/hostel/presentation/components/FloorCard";
 import RoomCard from "@features/hostel/presentation/components/RoomCard";
 import RoomFormModal from "@features/hostel/presentation/components/RoomFormModal";
 import RoomDetailsModal from "@features/hostel/presentation/components/RoomDetailsModal";
+import BuildingFormModal from "@features/hostel/presentation/components/BuildingFormModal";
 
 export default function HostelManagementPage() {
   const [buildings, setBuildings] = useState([]);
@@ -27,13 +29,18 @@ export default function HostelManagementPage() {
   const [formState, setFormState] = useState({ open: false, room: null });
   const [deletingRoom, setDeletingRoom] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [buildingFormOpen, setBuildingFormOpen] = useState(false);
 
-  useEffect(() => {
-    getBuildingsUseCase().then((data) => {
+  const loadBuildings = useCallback(() => {
+    return getBuildingsUseCase().then((data) => {
       setBuildings(data);
       setIsLoading(false);
     });
   }, []);
+
+  useEffect(() => {
+    loadBuildings();
+  }, [loadBuildings]);
 
   const loadFloors = useCallback((building) => {
     setIsLoading(true);
@@ -62,18 +69,28 @@ export default function HostelManagementPage() {
   const handleCreateOrUpdate = async (values) => {
     if (formState.room) {
       await updateRoomUseCase(formState.room.id, values);
+      setFormState({ open: false, room: null });
+      refreshRooms();
     } else {
       await createRoomUseCase({
         ...values,
         buildingId: selectedBuilding.id,
         buildingName: selectedBuilding.name,
-        floorId: selectedFloor.id,
-        floorLabel: selectedFloor.label,
-        floor: selectedFloor.floorNumber,
+        floor: selectedFloor ? selectedFloor.floorNumber : Number(values.floor),
       });
+      setFormState({ open: false, room: null });
+      if (selectedFloor) {
+        refreshRooms();
+      } else {
+        loadFloors(selectedBuilding);
+      }
     }
-    setFormState({ open: false, room: null });
-    refreshRooms();
+  };
+
+  const handleCreateBuilding = async (values) => {
+    await createBuildingUseCase(values);
+    setBuildingFormOpen(false);
+    loadBuildings();
   };
 
   const handleDelete = async () => {
@@ -91,7 +108,11 @@ export default function HostelManagementPage() {
         title="Hostel Management"
         subtitle="Manage buildings, floors and rooms"
         action={
-          selectedFloor && (
+          !selectedBuilding ? (
+            <Button icon={FiPlus} onClick={() => setBuildingFormOpen(true)}>
+              Add Building
+            </Button>
+          ) : (
             <Button icon={FiPlus} onClick={() => setFormState({ open: true, room: null })}>
               Add Room
             </Button>
@@ -143,11 +164,15 @@ export default function HostelManagementPage() {
           ))}
         </div>
       ) : !selectedFloor ? (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {floors.map((floor) => (
-            <FloorCard key={floor.id} floor={floor} onSelect={loadRooms} />
-          ))}
-        </div>
+        floors.length === 0 ? (
+          <EmptyState message="No rooms in this building yet" description="Add the first room to get started" />
+        ) : (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {floors.map((floor) => (
+              <FloorCard key={floor.id} floor={floor} onSelect={loadRooms} />
+            ))}
+          </div>
+        )
       ) : rooms.length === 0 ? (
         <EmptyState message="No rooms on this floor yet" description="Add the first room to get started" />
       ) : (
@@ -173,8 +198,17 @@ export default function HostelManagementPage() {
         key={formState.open ? (formState.room?.id ?? "new") : "closed"}
         open={formState.open}
         room={formState.room}
+        defaultFloor={selectedFloor?.floorNumber}
+        maxFloor={selectedBuilding?.floorCount}
         onClose={() => setFormState({ open: false, room: null })}
         onSubmit={handleCreateOrUpdate}
+      />
+
+      <BuildingFormModal
+        key={buildingFormOpen ? "open" : "closed"}
+        open={buildingFormOpen}
+        onClose={() => setBuildingFormOpen(false)}
+        onSubmit={handleCreateBuilding}
       />
 
       <ConfirmDialog

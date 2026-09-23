@@ -60,6 +60,15 @@ class HostelRepository {
     }));
   }
 
+  async createBuilding(payload) {
+    const { data } = await httpClient.post("/accommodation/buildings", {
+      name: payload.name,
+      address: payload.address,
+      floorCount: Number(payload.floorCount),
+    });
+    return data.data;
+  }
+
   async createRoom(payload) {
     const { data } = await httpClient.post("/accommodation/rooms", {
       roomNumber: payload.roomNumber,
