@@ -1,10 +1,13 @@
 import { BrowserRouter } from "react-router-dom";
 import AppRoutes from "@app/routes/AppRoutes";
+import SessionBridge from "@features/authentication/presentation/SessionBridge";
 
 function App() {
   return (
     <BrowserRouter>
-      <AppRoutes />
+      <SessionBridge>
+        <AppRoutes />
+      </SessionBridge>
     </BrowserRouter>
   );
 }
