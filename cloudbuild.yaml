@@ -1,5 +1,4 @@
-# CI/CD for the frontend service: build -> push -> roll out to GKE
-# (no test step yet: the frontend has no test suite).
+# CI/CD for the frontend service: test -> build -> push -> roll out to GKE.
 # Triggered by pushes to main (see another-home-infra/README.md for the trigger
 # setup). The Kubernetes config itself (env vars, resources, ingress) is deployed
 # from the another-home-infra repo; this pipeline only changes the image.
@@ -13,6 +12,20 @@ substitutions:
   _APP_BASE_URL: https://34.54.94.62.nip.io
 
 steps:
+  # Playwright smoke tests (login page + route-guard redirects). Uses the
+  # official Playwright image so Chromium is already present - no browser
+  # download step needed. Only covers unauthenticated routing/auth-gating;
+  # see playwright.config.js for why.
+  - id: test
+    name: mcr.microsoft.com/playwright:v1.63.0-jammy
+    dir: frontend
+    entrypoint: bash
+    args:
+      - -ceu
+      - |
+        npm ci
+        npx playwright test
+
   # Tag images with the commit so every deploy is traceable and can be rolled
   # back to. Manual `gcloud builds submit` runs have no commit, so they get the
   # build ID instead.
