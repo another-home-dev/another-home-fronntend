@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, BarChart3, Cloud, Droplet, Wind } from "lucide-react";
-import hostelImage from "@shared/assets/hostel.png";
+import hostelImage from "@shared/assets/hostel.webp";
 import Sparkline from "@shared/components/Sparkline";
 
 function getGreeting() {
@@ -16,7 +16,7 @@ export default function DashboardHero({ adminName, buildingOccupancy }) {
 
   return (
     <div className="relative mb-6 overflow-hidden rounded-3xl text-white shadow-[var(--shadow-card)]">
-      <img src={hostelImage} alt="" className="absolute inset-0 h-full w-full object-cover" />
+      <img src={hostelImage} alt="" fetchPriority="high" width={1280} height={720} className="absolute inset-0 h-full w-full object-cover" />
       <div className="absolute inset-0 bg-gradient-to-r from-primary-950/95 via-primary-900/85 to-primary-800/60" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_30%,rgba(59,130,246,0.25),transparent_50%)]" />
 
