@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import hostelImage from "@shared/assets/hostel.png";
+import hostelImage from "@shared/assets/hostel.webp";
 import BrandMark from "@shared/components/BrandMark";
 import ThemeToggle from "@shared/components/ThemeToggle";
 
@@ -21,7 +21,7 @@ export default function AuthLayout({ title, subtitle, children }) {
       <ThemeToggle className="fixed right-5 top-5 z-20 bg-white/70 backdrop-blur dark:bg-slate-800/70" />
 
       <div className="relative hidden flex-col justify-between overflow-hidden p-12 text-white md:flex lg:p-16">
-        <img src={hostelImage} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        <img src={hostelImage} alt="" fetchPriority="high" width={1280} height={720} className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-primary-950/90 via-primary-900/80 to-primary-800/75" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.14),transparent_45%)]" />
 
