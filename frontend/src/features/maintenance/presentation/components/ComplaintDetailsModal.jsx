@@ -1,8 +1,45 @@
+import { useEffect, useState } from "react";
 import { ImageOff, CheckCircle2 } from "lucide-react";
 import Modal from "@shared/components/Modal";
 import Button from "@shared/components/Button";
+import Spinner from "@shared/components/Spinner";
 import StatusBadge from "@features/maintenance/presentation/components/StatusBadge";
 import PriorityBadge from "@features/maintenance/presentation/components/PriorityBadge";
+import maintenanceRepository from "@features/maintenance/infrastructure/maintenanceRepository";
+
+// Keyed by complaint id at the call site, so its state resets per complaint.
+function ComplaintImage({ complaintId, hasImage }) {
+  const [state, setState] = useState(hasImage ? { status: "loading" } : { status: "none" });
+
+  useEffect(() => {
+    if (!hasImage) return undefined;
+    let cancelled = false;
+    maintenanceRepository
+      .fetchImage(complaintId)
+      .then((src) => !cancelled && setState({ status: "loaded", src }))
+      .catch(() => !cancelled && setState({ status: "error" }));
+    return () => {
+      cancelled = true;
+    };
+  }, [complaintId, hasImage]);
+
+  if (state.status === "loaded") {
+    return <img src={state.src} alt="Attached photo of the issue" className="max-h-72 w-full rounded-xl bg-slate-100 object-contain dark:bg-slate-800" />;
+  }
+
+  return (
+    <div className="flex h-24 items-center justify-center gap-2 rounded-xl border border-dashed border-slate-200 text-slate-400 dark:border-slate-700">
+      {state.status === "loading" ? (
+        <Spinner size={18} />
+      ) : (
+        <>
+          <ImageOff size={18} />
+          <span className="text-sm">{state.status === "error" ? "Couldn't load the attached image" : "No images attached"}</span>
+        </>
+      )}
+    </div>
+  );
+}
 
 function Field({ label, value }) {
   return (
@@ -59,10 +96,7 @@ export default function ComplaintDetailsModal({ open, complaint, onClose, onReso
 
       <div className="mt-5">
         <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-400">Attached Images</p>
-        <div className="flex h-24 items-center justify-center gap-2 rounded-xl border border-dashed border-slate-200 text-slate-400 dark:border-slate-700">
-          <ImageOff size={18} />
-          <span className="text-sm">No images attached</span>
-        </div>
+        <ComplaintImage key={complaint.id} complaintId={complaint.id} hasImage={complaint.hasImage} />
       </div>
 
       <div className="mt-5">

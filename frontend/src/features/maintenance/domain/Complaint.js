@@ -12,7 +12,7 @@ export class Complaint {
     assignedStaff,
     submittedDate,
     createdDate,
-    images = [],
+    hasImage = false,
     timeline = [],
   }) {
     this.id = id;
@@ -27,7 +27,7 @@ export class Complaint {
     this.assignedStaff = assignedStaff;
     this.submittedDate = submittedDate;
     this.createdDate = createdDate ?? submittedDate;
-    this.images = images;
+    this.hasImage = hasImage;
     this.timeline = timeline;
   }
 }

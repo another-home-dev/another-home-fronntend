@@ -40,10 +40,26 @@ class MaintenanceRepository {
         assignedStaff: item.assignedStaff,
         submittedDate: item.submittedDate,
         createdDate: item.submittedDate,
-        images: [],
+        hasImage: Boolean(item.hasImage),
         timeline: [],
       };
     });
+  }
+
+  // Maintenance requests are keyed by the filer's Asgardeo sub, not the Student.id.
+  async fetchByStudent(student) {
+    if (!student.asgardeoSub) return [];
+    const { data: res } = await httpClient.get("/operations/maintenance", {
+      params: { studentId: student.asgardeoSub, pageSize: 100 },
+    });
+
+    return res.data.map((item) => ({
+      id: item.id,
+      title: item.title,
+      category: item.category,
+      status: item.status,
+      date: new Date(item.submittedDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+    }));
   }
 
   async fetchComplaints({ page = 1, pageSize = 10, search = "", status = "All", priority = "All", category = "All" } = {}) {
@@ -63,6 +79,12 @@ class MaintenanceRepository {
     const data = filtered.slice(start, start + pageSize);
 
     return { currentPage, totalPages, totalRecords, pageSize, data };
+  }
+
+  // The list only carries hasImage; the photo itself is fetched on demand.
+  async fetchImage(id) {
+    const { data } = await httpClient.get(`/operations/maintenance/${id}/image`);
+    return data.imageData;
   }
 
   async fetchStats() {

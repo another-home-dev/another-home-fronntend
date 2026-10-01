@@ -1,6 +1,6 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
-const COLORS = ["#1d4ed8", "#0ea5e9", "#10b981", "#8b5cf6"];
+const COLORS = ["#0a6cb8", "#0ea5e9", "#10b981", "#8b5cf6"];
 
 export default function OccupancyByBuildingChart({ data }) {
   return (
