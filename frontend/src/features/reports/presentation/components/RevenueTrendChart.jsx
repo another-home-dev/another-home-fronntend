@@ -8,8 +8,8 @@ export default function RevenueTrendChart({ data }) {
       <AreaChart data={data} margin={{ top: 8, right: 8, left: -12, bottom: 0 }}>
         <defs>
           <linearGradient id="reportsCollected" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#1d4ed8" stopOpacity={0.3} />
-            <stop offset="100%" stopColor="#1d4ed8" stopOpacity={0} />
+            <stop offset="0%" stopColor="#0a6cb8" stopOpacity={0.3} />
+            <stop offset="100%" stopColor="#0a6cb8" stopOpacity={0} />
           </linearGradient>
         </defs>
 
@@ -22,7 +22,7 @@ export default function RevenueTrendChart({ data }) {
         />
         <Legend iconType="circle" wrapperStyle={{ fontSize: 13, color: "var(--color-text-secondary)" }} />
 
-        <Area type="monotone" dataKey="collected" name="Collected" stroke="#1d4ed8" strokeWidth={2} fill="url(#reportsCollected)" />
+        <Area type="monotone" dataKey="collected" name="Collected" stroke="#0a6cb8" strokeWidth={2} fill="url(#reportsCollected)" />
         <Area type="monotone" dataKey="pending" name="Pending" stroke="#f59e0b" strokeWidth={2} fill="none" />
         <Area type="monotone" dataKey="overdue" name="Overdue" stroke="#ef4444" strokeWidth={2} fill="none" />
       </AreaChart>

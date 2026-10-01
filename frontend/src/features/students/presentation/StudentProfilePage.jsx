@@ -9,7 +9,7 @@ import EmptyState from "@shared/components/EmptyState";
 import { getStudentByIdUseCase } from "@features/students/application/getStudentByIdUseCase";
 import { PAYMENT_STATUS_TONE, PAYMENT_STATUS_LABEL } from "@shared/utils/paymentStatus";
 
-const COMPLAINT_STATUS_TONE = { Pending: "warning", "In Progress": "info", Completed: "success" };
+const COMPLAINT_STATUS_TONE = { Pending: "warning", "In Progress": "info", Resolved: "success" };
 
 export default function StudentProfilePage() {
   const { id } = useParams();

@@ -3,20 +3,38 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-sans: "Plus Jakarta Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
 
-  /* Brand — deep blue (Another Home identity). primary-800 is the spec's #1E3A8A. */
-  --color-primary-50: #eff6ff;
-  --color-primary-100: #dbeafe;
-  --color-primary-200: #bfdbfe;
-  --color-primary-300: #93c5fd;
-  --color-primary-400: #60a5fa;
-  --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;
-  --color-primary-700: #1d4ed8;
-  --color-primary-800: #1e3a8a;
-  --color-primary-900: #172554;
-  --color-primary-950: #0f1a3d;
+  /* Brand — azure from the Another Home logo (primary-600 is the logo blue).
+     Shared with the mobile app's AppColors (primary = 700, primaryDark = 800). */
+  --color-primary-50: #eef7fe;
+  --color-primary-100: #d9edfc;
+  --color-primary-200: #bcdffa;
+  --color-primary-300: #8ecbf6;
+  --color-primary-400: #59aff0;
+  --color-primary-500: #1f8bdc;
+  --color-primary-600: #0b7fd3;
+  --color-primary-700: #0a6cb8;
+  --color-primary-800: #0d4b80;
+  --color-primary-900: #103f6b;
+  --color-primary-950: #0b2846;
+
+  /* Accent — sunshine yellow from the logo's doorway. Use sparingly. */
+  --color-accent-50: #fef9ec;
+  --color-accent-100: #fef3d6;
+  --color-accent-200: #fde4a3;
+  --color-accent-300: #fcd26b;
+  --color-accent-400: #f9b826;
+  --color-accent-500: #eaa10c;
+  --color-accent-600: #c98006;
+  --color-accent-700: #8a5a00;
+
+  /* Warm the light end of slate (borders, hovers, subtle fills) so it sits on
+     the warm off-white background; the dark end stays cool for dark mode. */
+  --color-slate-50: #f8f7f4;
+  --color-slate-100: #f1efea;
+  --color-slate-200: #e6e3db;
+  --color-slate-300: #d3cfc5;
 
   /* Status colors used across payments, maintenance, visitors */
   --color-success-50: #ecfdf5;
@@ -42,24 +60,24 @@
 
   /* Surfaces */
   --color-surface: #ffffff;
-  --color-background: #f8fafc;
-  --color-text-primary: #0f172a;
-  --color-text-secondary: #475569;
+  --color-background: #f7f6f2;
+  --color-text-primary: #14213d;
+  --color-text-secondary: #565d6d;
 
   --shadow-card: 0 1px 2px 0 rgb(15 23 42 / 0.04), 0 1px 3px 0 rgb(15 23 42 / 0.06);
   --shadow-card-hover: 0 4px 6px -1px rgb(15 23 42 / 0.08), 0 8px 16px -4px rgb(15 23 42 / 0.08);
 }
 
 .dark {
-  --color-surface: #0e1524;
-  --color-background: #070a14;
+  --color-surface: #131d31;
+  --color-background: #0b1322;
   --color-text-primary: #f1f5f9;
   --color-text-secondary: #94a3b8;
 
   --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.3), 0 1px 3px 0 rgb(0 0 0 / 0.4), inset 0 1px 0 0 rgb(255 255 255 / 0.03);
   --shadow-card-hover: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 8px 16px -4px rgb(0 0 0 / 0.5);
 
-  --shadow-glow-primary: 0 0 0 1px rgb(59 130 246 / 0.15), 0 8px 24px -6px rgb(37 99 235 / 0.45);
+  --shadow-glow-primary: 0 0 0 1px rgb(31 139 220 / 0.18), 0 8px 24px -6px rgb(11 127 211 / 0.45);
   --shadow-glow-success: 0 0 0 1px rgb(16 185 129 / 0.15), 0 8px 24px -6px rgb(5 150 105 / 0.4);
   --shadow-glow-warning: 0 0 0 1px rgb(245 158 11 / 0.15), 0 8px 24px -6px rgb(217 119 6 / 0.4);
   --shadow-glow-danger: 0 0 0 1px rgb(239 68 68 / 0.15), 0 8px 24px -6px rgb(220 38 38 / 0.4);
@@ -89,12 +107,12 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
+    background: #d3cfc5;
     border-radius: 9999px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
+    background: #a19d92;
   }
 
   .dark ::-webkit-scrollbar-thumb {

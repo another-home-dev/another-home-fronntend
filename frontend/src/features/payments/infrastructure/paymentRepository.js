@@ -3,6 +3,23 @@ import studentRepository from "@features/students/infrastructure/studentReposito
 
 const STATUS_MAP = { Pending: "pending", Paid: "paid", Overdue: "overdue" };
 
+function toPaymentRow(invoice, student) {
+  const dueDate = new Date(invoice.dueDate);
+
+  return {
+    id: invoice.invoiceId,
+    invoiceId: invoice.invoiceId,
+    studentId: invoice.studentId,
+    studentName: student?.name ?? "Unknown student",
+    roomNumber: student?.roomNumber ?? null,
+    buildingName: student?.buildingName ?? null,
+    month: dueDate.toLocaleDateString("en-US", { month: "short", year: "numeric" }),
+    amount: invoice.amount,
+    status: STATUS_MAP[invoice.status] ?? invoice.status.toLowerCase(),
+    paidOn: invoice.paidAt ? new Date(invoice.paidAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : null,
+  };
+}
+
 class PaymentRepository {
   async fetchAll() {
     const [{ data: invoicesRes }, students] = await Promise.all([
@@ -10,23 +27,12 @@ class PaymentRepository {
       studentRepository.fetchAll(),
     ]);
 
-    return invoicesRes.data.map((invoice) => {
-      const student = students.find((s) => s.id === invoice.studentId);
-      const dueDate = new Date(invoice.dueDate);
+    return invoicesRes.data.map((invoice) => toPaymentRow(invoice, students.find((s) => s.id === invoice.studentId)));
+  }
 
-      return {
-        id: invoice.invoiceId,
-        invoiceId: invoice.invoiceId,
-        studentId: invoice.studentId,
-        studentName: student?.name ?? "Unknown student",
-        roomNumber: student?.roomNumber ?? null,
-        buildingName: student?.buildingName ?? null,
-        month: dueDate.toLocaleDateString("en-US", { month: "short", year: "numeric" }),
-        amount: invoice.amount,
-        status: STATUS_MAP[invoice.status] ?? invoice.status.toLowerCase(),
-        paidOn: invoice.paidAt ? new Date(invoice.paidAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : null,
-      };
-    });
+  async fetchByStudent(student) {
+    const { data } = await httpClient.get(`/finance/invoices/${student.id}`);
+    return data.data.map((invoice) => toPaymentRow(invoice, student));
   }
 
   async fetchPage({ page = 1, pageSize = 10, status = "All", search = "" } = {}) {
