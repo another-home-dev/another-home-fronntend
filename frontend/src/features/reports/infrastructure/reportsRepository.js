@@ -3,14 +3,13 @@ import hostelRepository from "@features/hostel/infrastructure/hostelRepository";
 import maintenanceRepository from "@features/maintenance/infrastructure/maintenanceRepository";
 import studentRepository from "@features/students/infrastructure/studentRepository";
 import { Building } from "@features/hostel/domain/Building";
-
-const MONTH_ORDER = ["Feb", "Mar", "Apr", "May", "Jun", "Jul"];
+import { paymentStatusByStudent, trendMonths } from "@shared/utils/paymentStatus";
 
 class ReportsRepository {
   async fetchRevenueTrend() {
     const payments = await paymentRepository.fetchAll();
 
-    return MONTH_ORDER.map((month) => {
+    const trend = trendMonths(payments).map((month) => {
       const monthPayments = payments.filter((payment) => payment.month === month);
       return {
         month,
@@ -19,6 +18,9 @@ class ReportsRepository {
         overdue: monthPayments.filter((p) => p.status === "overdue").reduce((sum, p) => sum + p.amount, 0),
       };
     });
+    // All-time, not just the charted window.
+    const totalCollected = payments.filter((p) => p.status === "paid").reduce((sum, p) => sum + p.amount, 0);
+    return { trend, totalCollected };
   }
 
   async fetchOccupancyByBuilding() {
@@ -38,11 +40,13 @@ class ReportsRepository {
   }
 
   async fetchStudentsByPaymentStatus() {
-    const students = await studentRepository.fetchAll();
-    return ["paid", "pending", "overdue"].map((status) => ({
+    const [students, payments] = await Promise.all([studentRepository.fetchAll(), paymentRepository.fetchAll()]);
+    const statuses = paymentStatusByStudent(payments);
+    const byStatus = ["paid", "pending", "overdue"].map((status) => ({
       name: status.charAt(0).toUpperCase() + status.slice(1),
-      value: students.filter((student) => student.paymentStatus === status).length,
+      value: students.filter((student) => statuses.get(student.id) === status).length,
     }));
+    return { byStatus, totalStudents: students.length };
   }
 }
 
