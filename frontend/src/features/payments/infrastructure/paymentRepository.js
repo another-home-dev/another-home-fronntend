@@ -1,5 +1,6 @@
 import { httpClient } from "@infrastructure/api/httpClient";
 import studentRepository from "@features/students/infrastructure/studentRepository";
+import { formatPaymentMonth } from "@shared/utils/paymentStatus";
 
 const STATUS_MAP = { Pending: "pending", Paid: "paid", Overdue: "overdue" };
 
@@ -13,7 +14,8 @@ function toPaymentRow(invoice, student) {
     studentName: student?.name ?? "Unknown student",
     roomNumber: student?.roomNumber ?? null,
     buildingName: student?.buildingName ?? null,
-    month: dueDate.toLocaleDateString("en-US", { month: "short", year: "numeric" }),
+    month: formatPaymentMonth(dueDate),
+    dueDate: invoice.dueDate,
     amount: invoice.amount,
     status: STATUS_MAP[invoice.status] ?? invoice.status.toLowerCase(),
     paidOn: invoice.paidAt ? new Date(invoice.paidAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : null,

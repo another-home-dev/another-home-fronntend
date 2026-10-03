@@ -4,8 +4,7 @@ import maintenanceRepository from "@features/maintenance/infrastructure/maintena
 import { CATEGORIES } from "@features/maintenance/infrastructure/mockComplaints";
 import visitorRepository from "@features/visitors/infrastructure/visitorRepository";
 import paymentRepository from "@features/payments/infrastructure/paymentRepository";
-
-const MONTH_ORDER = ["Feb", "Mar", "Apr", "May", "Jun", "Jul"];
+import { trendMonths } from "@shared/utils/paymentStatus";
 
 class DashboardRepository {
   async fetchOverview() {
@@ -35,7 +34,7 @@ class DashboardRepository {
   async fetchPaymentTrend() {
     const payments = await paymentRepository.fetchAll();
 
-    return MONTH_ORDER.map((month) => {
+    return trendMonths(payments).map((month) => {
       const monthPayments = payments.filter((p) => p.month === month);
       return {
         month,

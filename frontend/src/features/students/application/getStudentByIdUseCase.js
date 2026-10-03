@@ -2,12 +2,7 @@ import studentRepository from "@features/students/infrastructure/studentReposito
 import paymentRepository from "@features/payments/infrastructure/paymentRepository";
 import maintenanceRepository from "@features/maintenance/infrastructure/maintenanceRepository";
 import { Student } from "@features/students/domain/Student";
-
-function overallPaymentStatus(payments) {
-  if (payments.some((p) => p.status === "overdue")) return "overdue";
-  if (payments.some((p) => p.status === "pending")) return "pending";
-  return payments.length ? "paid" : undefined;
-}
+import { overallPaymentStatus } from "@shared/utils/paymentStatus";
 
 export async function getStudentByIdUseCase(id) {
   const student = await studentRepository.fetchById(id);
