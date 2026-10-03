@@ -1,146 +1,88 @@
-# Another Home Frontend
+# Another Home — Web Dashboard
 
-A modern admin-only hostel management frontend for the Smart Hostel project. The app is built with Next.js and focuses on the progressive web console used by hostel administrators.
+The web dashboard for hostel staff. Wardens use it to run the hostel; super-admins also use it to create warden accounts. Students use the [mobile app](https://github.com/another-home-dev/mobile-app) instead.
 
-## Overview
+Part of [Another Home](https://github.com/another-home-dev). Live at <https://34.54.94.62.nip.io>.
 
-Another Home helps hostel teams manage daily operations from one interface:
+## Features
 
-- Admin dashboard with hostel occupancy, payments, maintenance, notices, residents, and room management views
-- Progressive web app metadata for the admin console
-- Security dashboard for visitor and hostel access workflows
-- Authentication screens for admin sign in and password recovery
-- Shared UI components and layouts for consistent pages across the application
+| Page | What it does |
+| --- | --- |
+| Dashboard | Totals, occupancy, maintenance and payment charts, recent activity |
+| Hostel Management | Add buildings and rooms; edit or delete rooms |
+| Students | Search residents, register a student, open a student's profile |
+| Room Allocation | Assign unallocated students to rooms, reassign students |
+| Maintenance | Review complaints and photos, mark them resolved |
+| Visitors | Approve or reject visitor requests; visitor history |
+| Payments | Invoice status by student, CSV report |
+| Reports & Analytics | Revenue, occupancy and complaint charts, CSV export |
+| Announcements | Publish and delete notices for students |
+| Notifications | Items that need attention: new complaints, pending visitors, overdue payments |
+| Wardens | Create warden accounts (super-admin only) |
 
-Student self-service is assigned to the mobile app. The web frontend keeps only the admin and operations experience.
+Cafeteria, Settings and Profile are UI previews: their changes stay in the browser and are not saved to the backend.
 
-## Tech Stack
+## Sign-in
 
-- Next.js 15
-- React 19
+Users sign in with Asgardeo (OpenID Connect). The dashboard reads the user's role from the token and accepts only `warden` and `super-admin`. Every API call sends the access token to the gateway.
+
+## Tech stack
+
+- React 19 and Vite, JavaScript
 - Tailwind CSS 4
-- React Icons
-- React Hook Form
-- Zustand
-- ESLint
+- React Router, Zustand for session state, React Hook Form
+- Axios for API calls, Recharts for charts
+- `@asgardeo/auth-react` for sign-in
+- Playwright for browser tests
 
-## Project Structure
+## Run locally
 
-```text
-another-home-fronntend/
-|-- README.md
-`-- frontend/
-    |-- src/
-    |   |-- app/                       # Next.js app router routes
-    |   |-- assets/                    # Images, icons, and logos
-    |   |-- features/                  # Feature-based modules
-    |   |   |-- authentication/        # Clean-architecture auth module
-    |   |   |-- dashboard/             # Admin dashboard pages
-    |   |   |-- room-management/       # Room domain, repositories, and pages
-    |   |   `-- security/              # Security staff pages
-    |   |-- shared/                    # Reusable components and layouts
-    |   |-- store/                     # App state stores
-    |   `-- styles/                    # Global theme styles
-    |-- package.json
-    `-- next.config.mjs
-```
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 20 or newer recommended
-- npm
-
-### Installation
+The app lives in the `frontend/` folder.
 
 ```bash
 cd frontend
 npm install
+npm run dev       # http://localhost:5173
 ```
 
-### Run the Development Server
+It talks to the API gateway. Start the backend from [another-home-infra](https://github.com/another-home-dev/anotherhome-infrastructure) with `docker compose up --build`, which also serves this dashboard at `http://localhost:8080`.
 
-```bash
-npm run dev
-```
-
-Open the app at:
-
-```text
-http://localhost:3000
-```
-
-The root route redirects to `/sign-in`.
-
-## Available Scripts
-
-Run these commands inside the `frontend` directory:
-
-```bash
-npm run dev
-```
-
-Starts the local development server.
-
-```bash
-npm run build
-```
-
-Creates a production build.
-
-```bash
-npm run start
-```
-
-Runs the production build locally.
-
-```bash
-npm run lint
-```
-
-Checks the codebase with ESLint.
-
-## Demo Login Accounts
-
-The authentication module currently uses seeded demo users from the local repository implementation.
-
-| Role | Email | Password |
+| Variable | Purpose | Default |
 | --- | --- | --- |
-| Admin | `admin@anotherhome.edu` | `admin123` |
-Only admin web access is supported in this frontend.
+| `VITE_API_BASE_URL` | API gateway URL | `http://localhost:3001/api/v1` |
+| `VITE_APP_BASE_URL` | This app's own URL, used as the Asgardeo sign-in redirect | `http://localhost:5173` |
 
-## Main Routes
+Both are read at build time. The Asgardeo client ID and tenant are in `src/features/authentication/infrastructure/asgardeoConfig.js`.
 
-| Route | Purpose |
+## Scripts
+
+Run inside `frontend/`:
+
+| Command | Does |
 | --- | --- |
-| `/sign-in` | Login page |
-| `/forgot-password` | Password recovery screen |
-| `/dashboard` | Admin dashboard home |
-| `/dashboard/residents` | Resident management |
-| `/dashboard/rooms` | Room management |
-| `/dashboard/billing` | Billing overview |
-| `/dashboard/maintenance` | Maintenance overview |
-| `/dashboard/notifications` | Notifications and notices |
-| `/security/dashboard` | Security dashboard |
+| `npm run dev` | Development server |
+| `npm run build` | Production build to `dist/` |
+| `npm run preview` | Serve the production build |
+| `npm run lint` | ESLint |
+| `npm run test:e2e` | Playwright smoke tests (`e2e/`) |
 
-## Architecture Notes
+## Project structure
 
-The project is organized by feature, with shared components and layouts separated from domain-specific modules.
+Each feature is split into layers, so pages never call the API directly:
 
-- `src/app` defines routes using the Next.js app router.
-- `src/features/dashboard` contains admin dashboard pages and operational views.
-- `src/features/authentication` and `src/features/room-management` use domain, application, infrastructure, and presentation layers.
-- `src/shared` contains reusable UI building blocks such as dashboard layouts, cards, brand elements, and form components.
+```
+frontend/src/
+├── app/                 router, layout, sidebar, route guards
+├── features/
+│   └── <feature>/
+│       ├── domain/          entities and business rules
+│       ├── application/     use cases
+│       ├── infrastructure/  API calls (repositories)
+│       └── presentation/    pages, components, hooks
+├── shared/              reusable UI components and utilities
+└── infrastructure/      HTTP client
+```
 
-## Current Status
+## Deployment
 
-This frontend is ready for local admin UI development and demonstration. Authentication and room operations are currently simulated in the frontend, so the next major step is connecting these repositories to real backend API endpoints.
-
-## Suggested Next Steps
-
-- Connect authentication to the backend API
-- Replace seeded room data with live room-management endpoints
-- Add protected-route behavior based on real sessions or tokens
-- Add form validation and loading/error states where workflows become connected to real services
-- Add automated tests for critical user flows
+`cloudbuild.yaml` runs on every push to `main`: Playwright smoke tests, Docker build with the live URLs, push to Artifact Registry, then a rolling update of the `frontend` deployment on GKE.
